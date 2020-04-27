@@ -50,7 +50,7 @@ export default (services) => {
         async getStudentByEmail(student_email) {
             return await DB.classroom.getStudent(student_email);
         },
-        async findNotificationRecepients(teacher_email, notification) {
+        async findNotificationRecipients(teacher_email, notification) {
             const teacher_students = await DB.classroom.getTeacherStudents(teacher_email);
             const mentions = await getNotificationMentions(notification);
             const student_index = {};

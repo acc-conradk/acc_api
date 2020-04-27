@@ -48,7 +48,7 @@ describe('Classroom', async () => {
         const expected = ['studentagnes@gmail.com', 'studentmiche@gmail.com'];
         expect(mentions).to.have.members(expected);
     });
-    it('Finds notification recepients', async () => {
+    it('Finds notification recipients', async () => {
         await classroomController.assignStudentsToTeacher('teacherken@gmail.com', ['studentjon@gmail.com', 'studenthon@gmail.com']);
         await classroomController.assignStudentsToTeacher('teacherbob@gmail.com', ['studentagnes@gmail.com', 'studentmiche@gmail.com']);
         const data = {
@@ -58,8 +58,8 @@ describe('Classroom', async () => {
         const { teacher, notification } = data;
         await classroomController.suspendStudent('studentjon@gmail.com');
         await classroomController.suspendStudent('studentagnes@gmail.com');
-        const recepients = await classroomController.findNotificationRecepients(teacher, notification);
+        const recipients = await classroomController.findNotificationRecipients(teacher, notification);
         const expected = ['studenthon@gmail.com', 'studentmiche@gmail.com'];
-        expect(recepients).to.have.members(expected);
+        expect(recipients).to.have.members(expected);
     });
 });
