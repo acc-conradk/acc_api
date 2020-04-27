@@ -15,6 +15,7 @@ export default (services) => {
             if (!student_emails) {
                 throw new Error(`Missing param: 'student_emails'`);
             }
+            await DB.classroom.addStudentsByEmails(student_emails);
             await DB.classroom.createTeacherStudent(teacher_email, student_emails);
         },
         /**
@@ -28,6 +29,24 @@ export default (services) => {
                 return [];
             }
             return await DB.classroom.getCommonStudents(teacher_emails);
+        },
+        /**
+         * @param {string} student_email
+         */
+        async suspendStudent(student_email) {
+            let student = await DB.classroom.getStudent(student_email);
+            if (!student) {
+                throw new Error(`Student does not exist`);
+            }
+            student.suspended = 1;
+            const { student_id } = student;
+            return await DB.classroom.updateStudent(student_id, student);
+        },
+        /**
+         * @param {string} student_email
+         */
+        async getStudentByEmail(student_email) {
+            return await DB.classroom.getStudent(student_email);
         },
     };
 };

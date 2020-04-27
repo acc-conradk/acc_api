@@ -3,7 +3,7 @@ import * as uuid from 'uuid';
  * @param {import('../db').Database} db
  */
 export default (db) => {
-    return {
+    const classroomDB = {
         createTeacherStudent: async function (teacher_email, student_emails) {
             const errors = [];
             for (let student_email of student_emails) {
@@ -47,5 +47,30 @@ export default (db) => {
             });
             return common_students;
         },
+        addStudentsByEmails: async function (student_emails) {
+            let students = [];
+            for (let student_email of student_emails) {
+                let student = await classroomDB.addStudent({ student_email });
+                students.push(student);
+            }
+            return students;
+        },
+        addStudent: async function (student) {
+            let student_id = uuid.v4();
+            const record = {
+                student_id,
+                ...student,
+            };
+            await db.insertRecord('student', record);
+            return record;
+        },
+        getStudent: async function (student_email) {
+            let student = await db.getRecord('student', { student_email });
+            return student;
+        },
+        updateStudent: async function (student_id, student) {
+            await db.updateRecord('student', student_id, student);
+        },
     };
+    return classroomDB;
 };
