@@ -1,0 +1,6 @@
+{
+    "events": {
+        "start": "npm run generate:docs"
+    },
+    "watch": ["src"]
+}
