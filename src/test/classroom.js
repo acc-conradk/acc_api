@@ -11,6 +11,18 @@ describe('Classroom', async () => {
     it('Assign students to teacher', async () => {
         await classroomController.assignStudentsToTeacher('teacherken@gmail.com', ['studentjon@gmail.com', 'studenthon@gmail.com']);
     });
+    it('Gets common students (single teacher)', async () => {
+        await classroomController.assignStudentsToTeacher('teacherken@gmail.com', [
+            'commonstudent1@gmail.com',
+            'commonstudent2@gmail.com',
+            'student_only_under_teacher_ken@gmail.com',
+        ]);
+        const commonstudents = await classroomController.getCommonStudents(['teacherken@gmail.com']);
+
+        //check the output
+        const expected = ['commonstudent1@gmail.com', 'commonstudent2@gmail.com', 'student_only_under_teacher_ken@gmail.com'];
+        expect(commonstudents).to.have.members(expected);
+    });
     it('Gets common students', async () => {
         await classroomController.assignStudentsToTeacher('teacherken@gmail.com', [
             'commonstudent1@gmail.com',
