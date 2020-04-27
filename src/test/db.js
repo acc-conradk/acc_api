@@ -3,13 +3,18 @@ let _store = {
     student: {},
     teacher_student: {},
 };
-export function reset() {
+export async function reset() {
     _store = {
         teacher: {},
         student: {},
         teacher_student: {},
     };
 }
+/**
+ * @param {*} table_name
+ * @param {*} record
+ * @returns {*}
+ */
 export async function insertRecord(table_name, record) {
     const pk_name = `${table_name}_id`;
     const store = _store[table_name];
@@ -40,14 +45,18 @@ export async function getRecord(table_name, where) {
     return null;
 }
 
-export async function updateRecord(table_name, record_id, record_props) {
+export async function updateRecords(table_name, record_props, where) {
     const store = _store[table_name];
-    let record = store[record_id];
-    record = {
-        ...record,
-        ...record_props,
-    };
-    store[record_id] = record;
+    for (let id in store) {
+        let record = store[id];
+        if (recordMatchesWhere(record, where)) {
+            record = {
+                ...record,
+                ...record_props,
+            };
+            store[id] = record;
+        }
+    }
 }
 /**
  * Checks if a record matches a where condition

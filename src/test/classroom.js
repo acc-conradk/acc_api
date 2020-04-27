@@ -1,12 +1,15 @@
 import { assert, expect } from 'chai';
-import testServices from './services';
-import * as db from './db';
+// import testServices from './services';
+import testServices from '../services/index';
 import makeClassroomController from '../controllers/classroom';
 import { getNotificationMentions } from '../lib/notification';
 const classroomController = makeClassroomController(testServices);
 describe('Classroom', async () => {
-    beforeEach(() => {
-        db.reset();
+    beforeEach(async () => {
+        await testServices.db.db.reset();
+    });
+    afterEach(async () => {
+        await testServices.db.db.reset();
     });
     it('Assign students to teacher', async () => {
         await classroomController.assignStudentsToTeacher('teacherken@gmail.com', ['studentjon@gmail.com', 'studenthon@gmail.com']);

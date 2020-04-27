@@ -1,0 +1,8 @@
+{
+    "dev": {
+        "driver": "mysql",
+        "database": "acc_api_db",
+        "user": "acc_api_dbadmin",
+        "password": "P@ssw0rd"
+    }
+}

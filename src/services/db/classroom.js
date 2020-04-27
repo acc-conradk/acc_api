@@ -50,8 +50,11 @@ export default (db) => {
         addStudentsByEmails: async function (student_emails) {
             let students = [];
             for (let student_email of student_emails) {
-                let student = await classroomDB.addStudent({ student_email });
-                students.push(student);
+                let existing_student = await classroomDB.getStudent(student_email);
+                if (!existing_student) {
+                    let student = await classroomDB.addStudent({ student_email });
+                    students.push(student);
+                }
             }
             return students;
         },
@@ -69,7 +72,7 @@ export default (db) => {
             return student;
         },
         updateStudent: async function (student_id, student) {
-            await db.updateRecord('student', student_id, student);
+            await db.updateRecords('student', student, { student_id });
         },
         getTeacherStudents: async function (teacher_email) {
             return await db.getRecords('teacher_student', { teacher_email });

@@ -7,7 +7,12 @@
         "test": "mocha src/test --recursive --require esm",
         "test:watch": "mocha src/test --reporter min -w --recursive --require esm",
         "start": "nodemon src/index.js",
-        "generate:docs": "apidoc -i src/api/ -o doc/"
+        "generate:docs": "apidoc -i src/api/ -o doc/",
+        "db:create": "echo \"Please enter the script name:\"; read script_name; npx db-migrate create \"$script_name\" --config config/database.json",
+        "db:up": "db-migrate up -c 1 --config config/database.json",
+        "db:ups": "db-migrate up -c 500 --config config/database.json",
+        "db:down": "db-migrate down -c 1 --config config/database.json",
+        "db:downs": "db-migrate down -c 500 --config config/database.json"
     },
     "keywords": [],
     "author": "",
@@ -17,11 +22,14 @@
         "body-parser": "^1.19.0",
         "chai": "^4.2.0",
         "cors": "^2.8.5",
+        "db-migrate": "^0.11.10",
+        "db-migrate-mysql": "^2.1.1",
         "dotenv": "^8.2.0",
         "esm": "^3.2.25",
         "express": "^4.17.1",
         "helmet": "^3.22.0",
         "mocha": "^7.1.1",
+        "mysqldriver": "^3.0.18",
         "uuid": "^7.0.3"
     },
     "apidoc": {
