@@ -1,12 +1,5 @@
-const express = require('express');
-const app = express();
-const PORT = 8081;
-app.use('/', (req, res) => {
-    res.json({
-        status: 'ok',
-    });
-});
-
-app.listen(PORT, () => {
-    console.log(`server listening on port ${PORT}`);
-});
+// Set options as a parameter, environment variable, or rc file.
+/** @type {*} */
+const m = module;
+require = require('esm')(m);
+module.exports = require('./server.js');
