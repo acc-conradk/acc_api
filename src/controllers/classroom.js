@@ -17,5 +17,17 @@ export default (services) => {
             }
             await DB.classroom.createTeacherStudent(teacher_email, student_emails);
         },
+        /**
+         * @param {string[]} teacher_emails
+         */
+        async getCommonStudents(teacher_emails) {
+            if (!teacher_emails) {
+                throw new Error(`Missing param: 'teacher_emails'`);
+            }
+            if (teacher_emails.length === 0) {
+                return [];
+            }
+            return await DB.classroom.getCommonStudents(teacher_emails);
+        },
     };
 };

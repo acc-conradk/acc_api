@@ -7,4 +7,5 @@ export default {
 /**
  * @typedef Database
  * @property {function(string, any)} insertRecord
+ * @property {function(string, any): Promise<any>} getRecords
  */
