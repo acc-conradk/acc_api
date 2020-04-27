@@ -1,8 +1,13 @@
 import { assert, expect } from 'chai';
 import testServices from './services';
+import * as db from './db';
 import makeClassroomController from '../controllers/classroom';
+import { getNotificationMentions } from '../lib/notification';
 const classroomController = makeClassroomController(testServices);
 describe('Classroom', async () => {
+    beforeEach(() => {
+        db.reset();
+    });
     it('Assign students to teacher', async () => {
         await classroomController.assignStudentsToTeacher('teacherken@gmail.com', ['studentjon@gmail.com', 'studenthon@gmail.com']);
     });
@@ -24,5 +29,25 @@ describe('Classroom', async () => {
         await classroomController.suspendStudent('studentjon@gmail.com');
         const student = await classroomController.getStudentByEmail('studentjon@gmail.com');
         assert.isTrue(student.suspended === 1, 'Student was not suspended');
+    });
+    it('Gets notification mentions', async () => {
+        let notification = 'Hello students! @studentagnes@gmail.com @studentmiche@gmail.com';
+        let mentions = getNotificationMentions(notification);
+        const expected = ['studentagnes@gmail.com', 'studentmiche@gmail.com'];
+        expect(mentions).to.have.members(expected);
+    });
+    it('Finds notification recepients', async () => {
+        await classroomController.assignStudentsToTeacher('teacherken@gmail.com', ['studentjon@gmail.com', 'studenthon@gmail.com']);
+        await classroomController.assignStudentsToTeacher('teacherbob@gmail.com', ['studentagnes@gmail.com', 'studentmiche@gmail.com']);
+        const data = {
+            'teacher': 'teacherken@gmail.com',
+            'notification': 'Hello students! @studentagnes@gmail.com @studentmiche@gmail.com',
+        };
+        const { teacher, notification } = data;
+        await classroomController.suspendStudent('studentjon@gmail.com');
+        await classroomController.suspendStudent('studentagnes@gmail.com');
+        const recepients = await classroomController.findNotificationRecepients(teacher, notification);
+        const expected = ['studenthon@gmail.com', 'studentmiche@gmail.com'];
+        expect(recepients).to.have.members(expected);
     });
 });

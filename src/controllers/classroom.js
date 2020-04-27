@@ -1,6 +1,8 @@
+import { getNotificationMentions } from '../lib/notification';
 /**
  * @param {import('../services/index').Services} services
  */
+
 export default (services) => {
     const DB = services.db;
     return {
@@ -47,6 +49,29 @@ export default (services) => {
          */
         async getStudentByEmail(student_email) {
             return await DB.classroom.getStudent(student_email);
+        },
+        async findNotificationRecepients(teacher_email, notification) {
+            const teacher_students = await DB.classroom.getTeacherStudents(teacher_email);
+            const mentions = await getNotificationMentions(notification);
+            const student_index = {};
+            for (let student_email of mentions) {
+                student_index[student_email] = 1;
+            }
+            for (let teacher_student of teacher_students) {
+                const { student_email } = teacher_student;
+                student_index[student_email] = 1;
+            }
+
+            //Filter out suspended users
+            const student_emails = Object.keys(student_index);
+            const students = await DB.classroom.getStudentsByEmails(student_emails);
+            for (let student of students) {
+                const { student_email, suspended } = student;
+                if (suspended) {
+                    delete student_index[student_email];
+                }
+            }
+            return Object.keys(student_index);
         },
     };
 };

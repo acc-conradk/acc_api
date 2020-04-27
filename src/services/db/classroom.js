@@ -71,6 +71,12 @@ export default (db) => {
         updateStudent: async function (student_id, student) {
             await db.updateRecord('student', student_id, student);
         },
+        getTeacherStudents: async function (teacher_email) {
+            return await db.getRecords('teacher_student', { teacher_email });
+        },
+        getStudentsByEmails: async function (student_emails) {
+            return await db.getRecords('student', { student_email: student_emails });
+        },
     };
     return classroomDB;
 };

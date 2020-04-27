@@ -3,6 +3,13 @@ let _store = {
     student: {},
     teacher_student: {},
 };
+export function reset() {
+    _store = {
+        teacher: {},
+        student: {},
+        teacher_student: {},
+    };
+}
 export async function insertRecord(table_name, record) {
     const pk_name = `${table_name}_id`;
     const store = _store[table_name];
