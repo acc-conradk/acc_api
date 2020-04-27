@@ -1,4 +1,5 @@
 import express from 'express';
+import controllers from '../controllers/index';
 const router = express.Router();
 /**
  *
@@ -32,6 +33,10 @@ const router = express.Router();
  *
  */
 router.post('/register', async (req, res) => {
+    const teacher_email = req.body.teacher;
+    const student_emails = req.body.students;
+    await controllers.classroom.assignStudentsToTeacher(teacher_email, student_emails);
+    res.status(204);
     res.json({
         status: 'ok',
     });
