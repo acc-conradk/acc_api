@@ -17,7 +17,6 @@ export default (services) => {
             if (!student_emails) {
                 throw new Error(`Missing param: 'student_emails'`);
             }
-            await DB.classroom.addStudentsByEmails(student_emails);
             await DB.classroom.createTeacherStudent(teacher_email, student_emails);
         },
         /**
