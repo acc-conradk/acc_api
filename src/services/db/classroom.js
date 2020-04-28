@@ -8,8 +8,12 @@ export default (db) => {
             const errors = [];
             for (let student_email of student_emails) {
                 try {
-                    let teacher_student_id = uuid.v4();
-                    await db.insertRecord('teacher_student', { teacher_student_id, teacher_email, student_email });
+                    let record = await db.getRecord('teacher_student', { teacher_email, student_email });
+                    if (!record) {
+                        // Only create if new record is not found
+                        let teacher_student_id = uuid.v4();
+                        await db.insertRecord('teacher_student', { teacher_student_id, teacher_email, student_email });
+                    }
                 } catch (err) {
                     errors.push(err);
                 }

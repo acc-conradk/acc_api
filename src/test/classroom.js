@@ -1,6 +1,6 @@
 import { assert, expect } from 'chai';
-// import testServices from './services';
-import testServices from '../services/index';
+import testServices from './services';
+// import testServices from '../services/index';
 import makeClassroomController from '../controllers/classroom';
 import { getNotificationMentions } from '../lib/notification';
 const classroomController = makeClassroomController(testServices);
