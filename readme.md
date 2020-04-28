@@ -26,5 +26,6 @@ GRANT ALL PRIVILEGES ON acc_api_db.* TO 'acc_api_dbadmin'@'%';
 FLUSH PRIVILEGES;
 ```
 
-3. Run the command `db:ups` to install all migrations
-4. Run the command `npm run start` to start the server
+3. Install the dependencies by running `npm install`
+4. Run the command `db:ups` to install all migrations
+5. Run the command `npm run start` to start the server
