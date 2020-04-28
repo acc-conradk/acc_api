@@ -1,5 +1,8 @@
 import express from 'express';
 import controllers from '../controllers/index';
+import { INTERNAL_SERVER_ERROR, OK, BAD_REQUEST, NO_CONTENT } from '../constants/httpCode';
+import { UNEXPECTED_ERROR, MissingParamAPIError } from '../constants/errors';
+import { STUDENTS_REGISTERED } from '../constants/message';
 const router = express.Router();
 /**
  *
@@ -27,19 +30,32 @@ const router = express.Router();
  *
  * @apiSuccessExample {json} Success-Response:
  * {
- *     "status" : "ok"
+ *     "message": "Students successfully registere"
  * }
  *
  *
  */
 router.post('/register', async (req, res) => {
-    const teacher_email = req.body.teacher;
-    const student_emails = req.body.students;
-    await controllers.classroom.assignStudentsToTeacher(teacher_email, student_emails);
-    res.status(204);
-    res.json({
-        status: 'ok',
-    });
+    try {
+        const teacher_email = req.body.teacher;
+        const student_emails = req.body.students;
+        if (!teacher_email) {
+            throw new MissingParamAPIError('missing param teacher');
+        }
+        if (!student_emails) {
+            throw new MissingParamAPIError('missing param students');
+        }
+        await controllers.classroom.assignStudentsToTeacher(teacher_email, student_emails);
+        res.status(NO_CONTENT);
+        res.json({
+            message: STUDENTS_REGISTERED,
+        });
+    } catch (err) {
+        res.status(err.statusCode || INTERNAL_SERVER_ERROR);
+        res.json({
+            message: err.formattedMessage || UNEXPECTED_ERROR,
+        });
+    }
 });
 
 /**
@@ -73,15 +89,25 @@ router.post('/register', async (req, res) => {
  *
  */
 router.get('/commonstudents', async (req, res) => {
-    let teachers = req.query.teacher;
-    if (!Array.isArray(teachers)) {
-        teachers = [teachers];
+    try {
+        let teachers = req.query.teacher;
+        if (!teachers) {
+            throw new MissingParamAPIError('missing param teacher');
+        }
+        if (!Array.isArray(teachers)) {
+            teachers = [teachers];
+        }
+        const students = await controllers.classroom.getCommonStudents(teachers);
+        res.status(OK);
+        res.json({
+            students,
+        });
+    } catch (err) {
+        res.status(err.statusCode || INTERNAL_SERVER_ERROR);
+        res.json({
+            message: err.formattedMessage || UNEXPECTED_ERROR,
+        });
     }
-    const students = await controllers.classroom.getCommonStudents(teachers);
-    res.status(200);
-    res.json({
-        students,
-    });
 });
 
 /**
@@ -111,12 +137,22 @@ router.get('/commonstudents', async (req, res) => {
  *
  */
 router.post('/suspend', async (req, res) => {
-    const student_email = req.body.student;
-    await controllers.classroom.suspendStudent(student_email);
-    res.status(204);
-    res.json({
-        status: 'ok',
-    });
+    try {
+        const student_email = req.body.student;
+        if (!student_email) {
+            throw new MissingParamAPIError('missing param student');
+        }
+        await controllers.classroom.suspendStudent(student_email);
+        res.status(NO_CONTENT);
+        res.json({
+            status: 'ok',
+        });
+    } catch (err) {
+        res.status(err.statusCode || INTERNAL_SERVER_ERROR);
+        res.json({
+            message: err.formattedMessage || UNEXPECTED_ERROR,
+        });
+    }
 });
 
 /**
@@ -153,13 +189,26 @@ router.post('/suspend', async (req, res) => {
  *
  */
 router.post('/retrievefornotifications', async (req, res) => {
-    const teacher = req.body.teacher;
-    const notification = req.body.notification;
-    const recipients = await controllers.classroom.findNotificationRecipients(teacher, notification);
-    res.status(204);
-    res.json({
-        recipients,
-    });
+    try {
+        const teacher = req.body.teacher;
+        const notification = req.body.notification;
+        if (!teacher) {
+            throw new MissingParamAPIError('missing param teacher');
+        }
+        if (!notification) {
+            throw new MissingParamAPIError('missing param notification');
+        }
+        const recipients = await controllers.classroom.findNotificationRecipients(teacher, notification);
+        res.status(OK);
+        res.json({
+            recipients,
+        });
+    } catch (err) {
+        res.status(err.statusCode || INTERNAL_SERVER_ERROR);
+        res.json({
+            message: err.formattedMessage || UNEXPECTED_ERROR,
+        });
+    }
 });
 
 export default router;
