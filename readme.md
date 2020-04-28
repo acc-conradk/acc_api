@@ -28,4 +28,5 @@ FLUSH PRIVILEGES;
 
 3. Install the dependencies by running `npm install`
 4. Run the command `db:ups` to install all migrations
-5. Run the command `npm run start` to start the server
+5. Run the command `npm run test` to run the unit test cases
+6. Run the command `npm run start` to start the server
